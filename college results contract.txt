@@ -1,0 +1,57 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+contract CollegeResults {
+struct Student {
+string name;
+uint marks;
+}
+Student[] public students;
+mapping(address => bool) public isAdmin;
+constructor() {
+isAdmin[msg.sender] = true;
+}
+modifier onlyAdmin() {
+require(isAdmin[msg.sender],
+"Only admin can perform this action
+");
+}
+function addAdmin(address admin) public onlyAdmin {
+isAdmin[admin] = true;
+}
+function addStudent(string memory _name, uint _marks) public onlyAdmin {
+students.push(Student(_name, _marks));
+}
+function getTopper() public view returns (string memory, uint) {
+require(students.length > 0,
+"No students have been added");
+uint highestMarks = 0;
+string memory topperName = ""
+;
+for (uint i = 0; i < students.length; i++) {
+if (students[i].marks > highestMarks) {
+highe estMarks = students[i].marks;
+topperName = students[i].name;
+}
+}
+return (topperName, highestMarks);
+}
+function getAverageMarks() public view returns (uint) {
+require(students.length > 0,
+"No students have been added");
+uint totalMarks = 0;
+for (uint i = 0; i < students.length; i++) {
+totalMarks += students[i].marks;
+}
+return totalMarks / students.length;
+}
+function getStudentCount() public view returns (uint) {
+return students.length;
+}
+function getStudent(uint index) public view returns (string memory, uint) {
+require(index < students.length,
+"Invalid student index
+");
+Student storage student = students[index];
+return (student.name, student.marks);
+}
+} 
